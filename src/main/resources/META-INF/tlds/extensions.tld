@@ -49,4 +49,18 @@
       org.joda.time.DateTime getMaxInactiveIntervalLimit()
     </function-signature>
   </function>
+  <function>
+    <name>isJqueryLegacy</name>
+    <function-class>statics.jp.furplag.sastruts.extension.util.WebclientUtils</function-class>
+    <function-signature>
+      java.lang.Boolean isJqueryLegacy()
+    </function-signature>
+  </function>
+  <function>
+    <name>isDevelop</name>
+    <function-class>statics.jp.furplag.sastruts.extension.util.WebclientUtils</function-class>
+    <function-signature>
+      java.lang.Boolean isDevelop()
+    </function-signature>
+  </function>
 </taglib>
