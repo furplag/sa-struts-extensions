@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>jp.furplag.sastruts</groupId>
+  <artifactId>sa-struts-extensions</artifactId>
+  <versioning>
+    <versions>
+      <version>1.0.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20150424111209</lastUpdated>
+  </versioning>
+</metadata>
