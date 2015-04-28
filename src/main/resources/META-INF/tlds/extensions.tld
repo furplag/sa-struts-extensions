@@ -43,6 +43,13 @@
     </function-signature>
   </function>
   <function>
+    <name>getIntervalMilliSecond</name>
+    <function-class>statics.jp.furplag.sastruts.extension.util.WebclientUtils</function-class>
+    <function-signature>
+      java.lang.Integer getMaxInactiveIntervalMilliSecond()
+    </function-signature>
+  </function>
+  <function>
     <name>getInactiveLimit</name>
     <function-class>statics.jp.furplag.sastruts.extension.util.WebclientUtils</function-class>
     <function-signature>

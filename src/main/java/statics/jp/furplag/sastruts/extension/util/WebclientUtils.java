@@ -19,8 +19,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import jp.furplag.util.WebInspector;
 import jp.furplag.util.commons.StringUtils;
 
@@ -29,11 +27,6 @@ import org.seasar.struts.util.RequestUtil;
 
 public class WebclientUtils {
 
-  protected static HttpServletRequest request;
-  static {
-    request = RequestUtil.getRequest();
-  }
-
   protected static final String IE_NAME = "internetexplorer";
 
   protected static final String SAFARI_NAME = "safari";
@@ -41,43 +34,47 @@ public class WebclientUtils {
   protected WebclientUtils() {}
 
   public static Map<String, String> getRequest() {
-    return WebInspector.get(request);
+    return WebInspector.get(RequestUtil.getRequest());
   }
 
   public static String getRequest(final String key) {
-    return WebInspector.get(request, key);
+    return WebInspector.get(RequestUtil.getRequest(), key);
   }
 
   public static String getOS() {
-    return WebInspector.getOS(request);
+    return WebInspector.getOS(RequestUtil.getRequest());
   }
 
   public static String getCategory() {
-    return WebInspector.getCategory(request);
+    return WebInspector.getCategory(RequestUtil.getRequest());
   }
 
   public static String getBrowser() {
-    return WebInspector.getBrowser(request);
+    return WebInspector.getBrowser(RequestUtil.getRequest());
   }
 
   public static String getVendor() {
-    return WebInspector.getVendor(request);
+    return WebInspector.getVendor(RequestUtil.getRequest());
   }
 
   public static String getVersion() {
-    return WebInspector.getVersion(request);
+    return WebInspector.getVersion(RequestUtil.getRequest());
   }
 
   public static double getVersionNumber() {
-    return WebInspector.getVersionNumber(request);
+    return WebInspector.getVersionNumber(RequestUtil.getRequest());
   }
 
   public static int getMaxInactiveInterval() {
-    return request.getSession(true).getMaxInactiveInterval();
+    return RequestUtil.getRequest().getSession(true).getMaxInactiveInterval();
   }
 
   public static int getMaxInactiveIntervalSecond() {
-    return Double.valueOf(getMaxInactiveInterval() / 60d).intValue();
+    return Double.valueOf(getMaxInactiveInterval() * 60d).intValue();
+  }
+
+  public static int getMaxInactiveIntervalMilliSecond() {
+    return Double.valueOf(getMaxInactiveInterval() * 60d * 1000d).intValue();
   }
 
   public static DateTime getMaxInactiveIntervalLimit() {
@@ -85,11 +82,7 @@ public class WebclientUtils {
   }
 
   public static boolean isJqueryLegacy() {
-    Map<String, String> info = getRequest();
-    if (IE_NAME.equals(info.get("name")) && 9d < WebInspector.getVersionNumber(request)) return true;
-    if (SAFARI_NAME.equals(info.get("name")) && 5.1 < WebInspector.getVersionNumber(request)) return true;
-
-    return false;
+    return WebInspector.isJqueryLegacy(RequestUtil.getRequest());
   }
 
   public static boolean isDevelop() {
@@ -97,10 +90,11 @@ public class WebclientUtils {
       InetAddress in = InetAddress.getLocalHost();
       if (ResourceUtils.containsValue("addr.develop", StringUtils.emptyToSafely(in.getHostAddress()))) return true;
       if (ResourceUtils.containsValue("addr.develop", StringUtils.emptyToSafely(in.getHostName()))) return true;
-      if (request.getRequestURL() != null && ResourceUtils.containsValue("addr.develop", request.getRequestURL().toString().replaceAll("^http(s)?:\\/\\/", "").replaceAll("\\/.*$", "").replaceAll(":.*$", ""))) return true;
-      if (ResourceUtils.getProp("param", "staging.port", "nope").equals(Integer.toString(request.getLocalPort()))) return true;
+      if (ResourceUtils.containsValue("addr.develop", RequestUtil.getRequest().getRequestURL().toString().replaceAll("^http(s)?:\\/\\/", "").replaceAll("\\/.*$", "").replaceAll(":.*$", ""))) return true;
+      if (ResourceUtils.getProp("param", "staging.port", "nope").equals(Integer.toString(RequestUtil.getRequest().getLocalPort()))) return true;
     } catch (UnknownHostException e) {
       e.printStackTrace();
+    } catch (NullPointerException e) {
     } catch (Exception e) {
       e.printStackTrace();
     }
