@@ -91,6 +91,7 @@ public class WebclientUtils {
   }
 
   public static boolean isDevelop() {
+    if (!(request != null && request.getRequestURL() != null)) return false;
     String url = request.getRequestURL().toString().replaceAll("^http(s)?:\\/\\/", "").replaceAll("\\/.*$", "").replaceAll(":.*$", "");
     if (StringUtils.isBlank(url)) return false;
     if (ResourceUtils.containsValue("addr.develop", url)) return true;
