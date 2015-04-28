@@ -93,15 +93,18 @@ public class WebclientUtils {
   }
 
   public static boolean isDevelop() {
-
     try {
-      if (ResourceUtils.containsValue("addr.develop", StringUtils.emptyToSafely(InetAddress.getLocalHost().toString()))) return true;
-      if (ResourceUtils.containsValue("addr.develop", StringUtils.emptyToSafely(InetAddress.getLocalHost().getHostName()))) return true;
+      InetAddress in = InetAddress.getLocalHost();
+      if (ResourceUtils.containsValue("addr.develop", StringUtils.emptyToSafely(in.getHostAddress()))) return true;
+      if (ResourceUtils.containsValue("addr.develop", StringUtils.emptyToSafely(in.getHostName()))) return true;
+      if (request.getRequestURL() != null && ResourceUtils.containsValue("addr.develop", request.getRequestURL().toString())) return true;
+      if (ResourceUtils.getProp("param", "staging.port", "nope").equals(Integer.toString(request.getLocalPort()))) return true;
     } catch (UnknownHostException e) {
       e.printStackTrace();
-      return false;
+    } catch (Exception e) {
+      e.printStackTrace();
     }
 
-    return ResourceUtils.getProp("param", "staging.port", "nope").equals(Integer.toString(request.getLocalPort()));
+    return false;
   }
 }
