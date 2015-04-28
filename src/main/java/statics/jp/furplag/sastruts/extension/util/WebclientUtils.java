@@ -15,6 +15,8 @@
  */
 package statics.jp.furplag.sastruts.extension.util;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -91,10 +93,14 @@ public class WebclientUtils {
   }
 
   public static boolean isDevelop() {
-    if (!(request != null && request.getRequestURL() != null)) return false;
-    String url = request.getRequestURL().toString().replaceAll("^http(s)?:\\/\\/", "").replaceAll("\\/.*$", "").replaceAll(":.*$", "");
-    if (StringUtils.isBlank(url)) return false;
-    if (ResourceUtils.containsValue("addr.develop", url)) return true;
+
+    try {
+      if (ResourceUtils.containsValue("addr.develop", StringUtils.emptyToSafely(InetAddress.getLocalHost().toString()))) return true;
+      if (ResourceUtils.containsValue("addr.develop", StringUtils.emptyToSafely(InetAddress.getLocalHost().getHostName()))) return true;
+    } catch (UnknownHostException e) {
+      e.printStackTrace();
+      return false;
+    }
 
     return ResourceUtils.getProp("param", "staging.port", "nope").equals(Integer.toString(request.getLocalPort()));
   }
