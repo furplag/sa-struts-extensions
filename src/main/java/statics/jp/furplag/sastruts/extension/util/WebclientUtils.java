@@ -69,16 +69,12 @@ public class WebclientUtils {
     return RequestUtil.getRequest().getSession(true).getMaxInactiveInterval();
   }
 
-  public static int getMaxInactiveIntervalSecond() {
-    return Double.valueOf(getMaxInactiveInterval() * 60d).intValue();
-  }
-
-  public static int getMaxInactiveIntervalMilliSecond() {
-    return Double.valueOf(getMaxInactiveInterval() * 60d * 1000d).intValue();
+  public static int getMaxInactiveIntervalMilli() {
+    return Double.valueOf(getMaxInactiveInterval() * 1000d).intValue();
   }
 
   public static DateTime getMaxInactiveIntervalLimit() {
-    return DateTime.now().plusMinutes(getMaxInactiveInterval());
+    return DateTime.now().plusSeconds(getMaxInactiveInterval());
   }
 
   public static boolean isJqueryLegacy() {
