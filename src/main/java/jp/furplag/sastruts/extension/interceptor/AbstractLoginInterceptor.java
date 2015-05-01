@@ -16,6 +16,8 @@
 package jp.furplag.sastruts.extension.interceptor;
 
 import java.lang.reflect.Method;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 import javax.annotation.Resource;
 
@@ -28,49 +30,61 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+import org.joda.time.format.PeriodFormat;
 import org.seasar.framework.aop.interceptors.AbstractInterceptor;
 import org.seasar.struts.annotation.Execute;
 import org.seasar.struts.util.ActionMessagesUtil;
 import org.seasar.struts.util.RequestUtil;
 
-import statics.jp.furplag.sastruts.extension.util.ResourceUtils;
-
 public abstract class AbstractLoginInterceptor extends AbstractInterceptor {
 
-  private static final long serialVersionUID = 3361525807255347648L;
+  private static final long serialVersionUID = 1L;
+
+  private ResourceBundle bundle;
 
   @Resource
   protected OriginuserDto originuserDto;
 
-  public AbstractLoginInterceptor() {}
+  public AbstractLoginInterceptor() {
+    setBundle(ResourceBundle.getBundle("jp.furplag.sastruts.extension.interceptor.i18n.Resources"));
+  }
 
   @Override
   public Object invoke(MethodInvocation invocation) throws Throwable {
-
     Method method = invocation.getMethod();
     if (method.isAnnotationPresent(Execute.class) && !method.isAnnotationPresent(jp.furplag.sastruts.extension.persistence.Anonymous.class)) {
       ActionMessages messages = new ActionMessages();
       if (originuserDto == null) {
-        messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(ResourceUtils.getProp("errors.timeout"), false));
+        messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(bundle.getString("errors.timeout"), false));
       } else if (!originuserDto.isAuthenticated()) {
-        messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(ResourceUtils.getProp("errors.auth"), false));
+        messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(bundle.getString("errors.auth"), false));
       }
-      if (messages.size() < 1 && method.isAnnotationPresent(jp.furplag.sastruts.extension.persistence.Admin.class) && !originuserDto.isAdministrable()) messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("errors.permission.admin"));
-      if (messages.size() < 1 && method.isAnnotationPresent(jp.furplag.sastruts.extension.persistence.Config.class) && !originuserDto.isConfigurable()) messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("errors.permission.config"));
+      if (messages.size() < 1 && method.isAnnotationPresent(jp.furplag.sastruts.extension.persistence.Admin.class) && !originuserDto.isAdministrable()) messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(bundle.getString("errors.permission.admin"), false));
+      if (messages.size() < 1 && method.isAnnotationPresent(jp.furplag.sastruts.extension.persistence.Config.class) && !originuserDto.isConfigurable()) messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(bundle.getString("errors.permission.config"), false));
       if (messages.size() > 0) {
         ActionMessagesUtil.addErrors(RequestUtil.getRequest().getSession(), messages);
         return method.isAnnotationPresent(LinearResponse.class) ? "/fatal/linear?redirect=true" : "/fatal/?redirect=true";
       }
     }
     final Log log = LogFactory.getLog(getTargetClass(invocation));
-    final long start = System.currentTimeMillis();
-    if (method.isAnnotationPresent(Execute.class)) log.info("START " + getTargetClass(invocation).getSimpleName() + "#" + invocation.getMethod().getName());
+    final DateTime start = DateTime.now();
+    if (method.isAnnotationPresent(Execute.class)) log.info(MessageFormat.format(bundle.getString("start"), new Object[]{getTargetClass(invocation).getSimpleName(), invocation.getMethod().getName()}));
     Object ret = invocation.proceed();
-    if (method.isAnnotationPresent(Execute.class)) log.info("END " + getTargetClass(invocation).getSimpleName() + "#" + invocation.getMethod().getName()+ " - " + (System.currentTimeMillis() - start) + "msec.");
+    if (method.isAnnotationPresent(Execute.class)) log.info(MessageFormat.format(bundle.getString("end"), new Object[]{getTargetClass(invocation).getSimpleName(), invocation.getMethod().getName(), PeriodFormat.wordBased().print(new Period(start, DateTime.now()))}));
     if (method.isAnnotationPresent(Logging.class)) logging(method);
 
     return ret;
   }
 
   abstract public void logging(Method method);
+
+  protected ResourceBundle getBundle() {
+    return bundle;
+  }
+
+  protected void setBundle(ResourceBundle bundle) {
+    this.bundle = bundle;
+  }
 }

@@ -15,6 +15,8 @@
  */
 package jp.furplag.sastruts.extension.interceptor;
 
+import java.util.ResourceBundle;
+
 import javax.servlet.http.HttpServletRequest;
 
 import jp.furplag.sastruts.extension.persistence.LinearResponse;
@@ -31,16 +33,23 @@ import org.seasar.struts.util.RequestUtil;
 
 public class TokenValidateInterceptor extends AbstractInterceptor {
 
-  private static final long serialVersionUID = -2629233953919243195L;
+  private static final long serialVersionUID = 1L;
 
   private S2Container container;
+
+  private ResourceBundle bundle;
+
+  public TokenValidateInterceptor() {
+    setBundle(ResourceBundle.getBundle("jp.furplag.sastruts.extension.interceptor.i18n.Resources"));
+  }
 
   public Object invoke(MethodInvocation invocation) throws Throwable {
     if (!invocation.getMethod().isAnnotationPresent(TokenValidate.class)) return invocation.proceed();
     if (!TokenProcessor.getInstance().isTokenValid((HttpServletRequest) container.getExternalContext().getRequest(), true)) {
       ActionMessages messages = new ActionMessages();
-      messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("errors.token"));
+      messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(bundle.getString("errors.token"), false));
       ActionMessagesUtil.addErrors(RequestUtil.getRequest().getSession(true), messages);
+
       return invocation.getMethod().isAnnotationPresent(LinearResponse.class) ? "/fatal/linear?redirect=true" : "/fatal/?redirect=true";
     }
 
@@ -53,5 +62,13 @@ public class TokenValidateInterceptor extends AbstractInterceptor {
 
   public void setContainer(S2Container container) {
     this.container = container.getRoot();
+  }
+
+  protected ResourceBundle getBundle() {
+    return bundle;
+  }
+
+  protected void setBundle(ResourceBundle bundle) {
+    this.bundle = bundle;
   }
 }

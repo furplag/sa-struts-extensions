@@ -16,6 +16,7 @@
 package jp.furplag.sastruts.extension.interceptor;
 
 import java.lang.reflect.Method;
+import java.util.ResourceBundle;
 
 import jp.furplag.sastruts.extension.persistence.LinearResponse;
 
@@ -31,9 +32,15 @@ import org.seasar.struts.util.RequestUtil;
 
 public class ThrowableInterceptor extends ThrowsInterceptor {
 
-  private static final long serialVersionUID = 4357661430968420869L;
+  private static final long serialVersionUID = 1L;
 
-  public ThrowableInterceptor() {}
+  private static final int STACKTRACES = 5;
+
+  private ResourceBundle bundle;
+
+  public ThrowableInterceptor() {
+    setBundle(ResourceBundle.getBundle("jp.furplag.sastruts.extension.interceptor.i18n.Resources"));
+  }
 
   public Object handleThrowable(Throwable throwable, MethodInvocation invocation) throws Throwable {
     final Log log = LogFactory.getLog(getTargetClass(invocation));
@@ -41,24 +48,31 @@ public class ThrowableInterceptor extends ThrowsInterceptor {
     log.error(getTargetClass(invocation).getSimpleName() + "#" + method.getName(), throwable);
     if (method.isAnnotationPresent(Execute.class)) {
       ActionMessages messages = new ActionMessages();
-      messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("errors.throwable"));
+      messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(bundle.getString("errors.throwable"), false));
       messages.add("errors.detail", new ActionMessage(throwable.getClass().getName(), false));
       StackTraceElement[] st = throwable.getStackTrace();
-      for (int i = 0; i < (st.length < 5 ? st.length : 5); i++) {
+      for (int i = 0; i < (st.length < STACKTRACES ? st.length : STACKTRACES); i++) {
         messages.add("errors.detail", new ActionMessage(st[i].toString(), false));
       }
-      if (st.length > 5) messages.add("errors.detail", new ActionMessage("and more...", false));
+      if (st.length > STACKTRACES) messages.add("errors.detail", new ActionMessage(bundle.getString("errors.stacktrace.overflow"), false));
       ActionMessagesUtil.addErrors(RequestUtil.getRequest().getSession(true), messages);
 
       return method.isAnnotationPresent(LinearResponse.class) ? "/fatal/linear?redirect=true" : "/fatal/?redirect=true";
     }
-    log.error(throwable.getClass().getName());
     StackTraceElement[] st = throwable.getStackTrace();
     for (int i = 0; i < (st.length < 5 ? st.length : 5); i++) {
       log.error(st[i].toString());
     }
-    if (st.length > 5) log.error("and more...");
+    if (st.length > 5) log.error(bundle.getString("errors.stacktrace.overflow"));
 
     throw throwable;
+  }
+
+  protected ResourceBundle getBundle() {
+    return bundle;
+  }
+
+  protected void setBundle(ResourceBundle bundle) {
+    this.bundle = bundle;
   }
 }

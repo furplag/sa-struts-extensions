@@ -26,7 +26,7 @@ import org.seasar.framework.container.S2Container;
 
 public class TokenInterceptor extends AbstractInterceptor {
 
-  private static final long serialVersionUID = -6626634352477491712L;
+  private static final long serialVersionUID = 1L;
 
   private S2Container container;
 

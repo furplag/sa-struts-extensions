@@ -27,10 +27,6 @@ import org.seasar.struts.util.RequestUtil;
 
 public class WebclientUtils {
 
-  protected static final String IE_NAME = "internetexplorer";
-
-  protected static final String SAFARI_NAME = "safari";
-
   protected WebclientUtils() {}
 
   public static Map<String, String> getRequest() {

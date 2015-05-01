@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +15,9 @@
  */
 package jp.furplag.struts.initializer.servlet;
 
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
@@ -22,7 +25,6 @@ import jp.furplag.util.commons.StringUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts.util.MessageResources;
 import org.seasar.framework.container.ComponentNotFoundRuntimeException;
 import org.seasar.framework.container.SingletonS2Container;
 import org.seasar.framework.exception.SQLRuntimeException;
@@ -35,12 +37,12 @@ public class InitializeServlet extends HttpServlet {
 
   protected static final String ACTIVATION_PARAM = "activate";
 
-  protected static final String BUNDLE = "initializer";
+  protected static final String BUNDLE = "jp.furplag.struts.initializer.i18n.Resources";
 
   @Override
   public void init() throws ServletException {
-    MessageResources mr = MessageResources.getMessageResources(BUNDLE);
-    LOG.info(mr.getMessage("start"));
+    ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE);
+    LOG.info(bundle.getString("start"));
     final long start = System.currentTimeMillis();
     jp.furplag.struts.initializer.dto.PropsDto propsDto = null;
     try {
@@ -48,24 +50,22 @@ public class InitializeServlet extends HttpServlet {
       if (StringUtils.flatten(getInitParameter(ACTIVATION_PARAM)).matches("^t(rue)?|y(es)?|on|1$")) {
         propsDto.setProps(SingletonS2Container.getComponent(jp.furplag.struts.initializer.service.PropDtoService.class).getProps());
       } else {
-        LOG.info(mr.getMessage("skip retrieving of external properties."));
+        LOG.info(bundle.getString("inactive"));
       }
     } catch (ComponentNotFoundRuntimeException e) {
       e.printStackTrace();
-      LOG.fatal((propsDto == null ? "PropsDto" : "PropDtoService") + " not found.");
-      LOG.fatal("check your [src/resources/app.dicon] and configure.");
+      LOG.fatal(MessageFormat.format(bundle.getString("fatal.component"), propsDto == null ? "PropsDto" : "PropDtoService"));
     } catch (SQLRuntimeException e) {
       e.printStackTrace();
-      LOG.fatal("check your [src/resources/customizer.dicon, src/resources/jdbc.dicon, src/resources/s2jdbc.dicon] and configure.");
-      LOG.fatal("check your dependent-library([src/main/webapp/WEB-INF/lib]).");
+      LOG.fatal(bundle.getString("fatal.sql"));
     } catch (Exception e) {
       e.printStackTrace();
-      LOG.fatal("check your [src/main/webapp/WEB-INF/web.xml, src/resources/*.dicon] config, and see below.");
+      LOG.fatal(bundle.getString("fatal.any"));
       for (StackTraceElement s : e.getStackTrace()) {
         LOG.fatal(s.toString());
       }
     }
-    LOG.info(mr.getMessage(propsDto == null ? "fatal" : "result", propsDto == null ? new Object[]{} : new Object[]{"", propsDto.getCount(), ""}));
-    LOG.info(mr.getMessage("end", new Object[]{System.currentTimeMillis() - start}));
+    LOG.info(propsDto == null ? bundle.getString("fatal") : MessageFormat.format(bundle.getString("result"), new Object[]{"", propsDto.getCount(), ""}));
+    LOG.info(MessageFormat.format(bundle.getString("end"), new Object[]{System.currentTimeMillis() - start}));
   }
 }

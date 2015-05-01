@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.furplag.sastruts.extension.task;
+package jp.furplag.struts.initializer.i18n;
 
-public class Empty {}
+public class Resources extends Resources_en {
+  public Resources() {}
+}

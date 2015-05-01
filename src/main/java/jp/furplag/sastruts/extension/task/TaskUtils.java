@@ -15,4 +15,20 @@
  */
 package jp.furplag.sastruts.extension.task;
 
-public class Empty {}
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+
+public class TaskUtils {
+
+  protected TaskUtils() {}
+
+  private static final String EXPRESSION_DEFAULT = "0 0 0 * * ?";
+
+  public static String getDefaultExpression() {
+    return EXPRESSION_DEFAULT;
+  }
+
+  public static String getInactiveExpression() {
+    return StringUtils.join(new Object[]{EXPRESSION_DEFAULT, DateTime.now().minusYears(1000).getYear()}, " ");
+  }
+}

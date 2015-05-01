@@ -63,4 +63,25 @@
       java.lang.Boolean isDevelop()
     </function-signature>
   </function>
+  <function>
+    <name>prettify</name>
+    <function-class>statics.jp.furplag.sastruts.extension.util.DateTimeUtils</function-class>
+    <function-signature>
+      java.lang.String prettify(java.lang.Object, java.lang.String, java.lang.String)
+    </function-signature>
+  </function>
+  <function>
+    <name>prettifyWithLocale</name>
+    <function-class>statics.jp.furplag.sastruts.extension.util.DateTimeUtils</function-class>
+    <function-signature>
+      java.lang.String prettifyWithLocale(java.lang.Object, java.lang.String)
+    </function-signature>
+  </function>
+  <function>
+    <name>prettifyZoned</name>
+    <function-class>statics.jp.furplag.sastruts.extension.util.DateTimeUtils</function-class>
+    <function-signature>
+      java.lang.String prettifyZoned(java.lang.Object, java.lang.String)
+    </function-signature>
+  </function>
 </taglib>
