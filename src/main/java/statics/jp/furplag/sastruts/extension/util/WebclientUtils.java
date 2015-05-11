@@ -83,7 +83,7 @@ public class WebclientUtils {
       if (ResourceUtils.containsValue("addr.develop", StringUtils.emptyToSafely(in.getHostAddress()))) return true;
       if (ResourceUtils.containsValue("addr.develop", StringUtils.emptyToSafely(in.getHostName()))) return true;
       if (ResourceUtils.containsValue("addr.develop", RequestUtil.getRequest().getRequestURL().toString().replaceAll("^http(s)?:\\/\\/", "").replaceAll("\\/.*$", "").replaceAll(":.*$", ""))) return true;
-      if (ResourceUtils.getProp("param", "staging.port", "nope").equals(Integer.toString(RequestUtil.getRequest().getLocalPort()))) return true;
+      if (ResourceUtils.get("param", "staging.port", "nope").equals(Integer.toString(RequestUtil.getRequest().getLocalPort()))) return true;
     } catch (UnknownHostException e) {
       e.printStackTrace();
     } catch (NullPointerException e) {

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,19 +15,20 @@
  */
 package statics.jp.furplag.sastruts.extension.util;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import jp.furplag.struts.initializer.dto.PropsDto;
 import jp.furplag.struts.initializer.service.PropDtoService;
 import jp.furplag.util.commons.StringUtils;
 
 import org.apache.struts.util.LabelValueBean;
-import org.apache.struts.util.MessageResources;
 import org.seasar.framework.container.SingletonS2Container;
 
-public class ResourceUtils {
+public class ResourceUtils extends jp.furplag.util.ResourceUtils {
 
   protected static PropsDto propsDto;
   static {
@@ -40,57 +41,30 @@ public class ResourceUtils {
 
   protected static final String RESOURCE_DEFAULT = "application";
 
-  protected ResourceUtils() {}
-
-  public static String getProp(final String key) {
-    return getResource(null, key, null, null);
+  protected ResourceUtils() {
+    super();
   }
 
-  public static String getProp(final String bundle, final String key) {
-    return getResource(bundle, key, null, null);
-  }
-
-  public static String getProp(final String key, final Object[] args) {
-    return getResource(null, key, args, null);
-  }
-
-  public static String getProp(final String bundle, final String key, final Object[] args) {
-    return getResource(bundle, key, args, null);
-  }
-
-  public static String getProp(final String bundle, final String key, final String defaultString) {
-    return getResource(bundle, key, null, defaultString);
-  }
-
-  public static String getProp(final String bundle, final String key, final Object[] args, final String defaultString) {
-    String ret = getResource(bundle, key, args, defaultString);
-    return StringUtils.isBlank(ret) ? defaultString : ret;
-  }
-
-  private static String getResource(final String bundle, final String key, final Object[] args, final String defaultString) {
+  public static String get(final String bundle, final String key, final Object[] arguments, Locale locale, final String defaultString) {
     String ret = propsDto == null ? StringUtils.EMPTY : propsDto.get(bundle, key);
-    if (!StringUtils.isBlank(ret)) return ret;
-    if (StringUtils.isBlank(key)) return StringUtils.isBlank(defaultString) ? StringUtils.EMPTY : defaultString;
-    MessageResources resource = MessageResources.getMessageResources(StringUtils.isSimilarToBlank(bundle) ? RESOURCE_DEFAULT : bundle);
-    if (resource == null) return StringUtils.isBlank(defaultString) ? StringUtils.EMPTY : defaultString;
-    ret = resource.getMessage(key, args);
+    if (!StringUtils.isBlank(ret)) return MessageFormat.format(StringUtils.defaultString(ret), arguments);
 
-    return StringUtils.isBlank(ret) ? StringUtils.isBlank(defaultString) ? StringUtils.EMPTY : defaultString : ret;
+    return jp.furplag.util.ResourceUtils.get(bundle, key, arguments, defaultString, locale);
   }
 
-  public static List<LabelValueBean> getDdl(final String key) {
-    return getDdl(key, null, false);
+  public static List<LabelValueBean> gets(final String key) {
+    return gets(key, null, false);
   }
 
-  public static List<LabelValueBean> getDdl(final String key, final boolean reverse) {
-    return getDdl(key, null, reverse);
+  public static List<LabelValueBean> gets(final String key, final boolean reverse) {
+    return gets(key, null, reverse);
   }
 
-  public static List<LabelValueBean> getDdl(final String key, final String orderKey) {
-    return getDdl(key, orderKey, false);
+  public static List<LabelValueBean> gets(final String key, final String orderKey) {
+    return gets(key, orderKey, false);
   }
 
-  public static List<LabelValueBean> getDdl(final String key, final String orderKey, final boolean reverse) {
+  public static List<LabelValueBean> gets(final String key, final String orderKey, final boolean reverse) {
     List<LabelValueBean> ret = new ArrayList<LabelValueBean>();
     for (jp.furplag.struts.initializer.dto.PropDto e : propsDto.gets(key, orderKey, reverse)) {
       ret.add(e.toLabelValueBean());
@@ -99,19 +73,19 @@ public class ResourceUtils {
     return ret;
   }
 
-  public static List<LabelValueBean> getDdlKeyExcludes(final String key, final String... excludes) {
-    return getDdlKeyExcludes(key, null, false, excludes);
+  public static List<LabelValueBean> getsKeyExcludes(final String key, final String... excludes) {
+    return getsKeyExcludes(key, null, false, excludes);
   }
 
-  public static List<LabelValueBean> getDdlKeyExcludes(final String key, final String orderKey, final String... excludes) {
-    return getDdlKeyExcludes(key, orderKey, false, excludes);
+  public static List<LabelValueBean> getsKeyExcludes(final String key, final String orderKey, final String... excludes) {
+    return getsKeyExcludes(key, orderKey, false, excludes);
   }
 
-  public static List<LabelValueBean> getDdlKeyExcludes(final String key, final boolean reverse, final String... excludes) {
-    return getDdlKeyExcludes(key, null, reverse, excludes);
+  public static List<LabelValueBean> getsKeyExcludes(final String key, final boolean reverse, final String... excludes) {
+    return getsKeyExcludes(key, null, reverse, excludes);
   }
 
-  public static List<LabelValueBean> getDdlKeyExcludes(final String key, final String orderKey, final boolean reverse, final String... excludes) {
+  public static List<LabelValueBean> getsKeyExcludes(final String key, final String orderKey, final boolean reverse, final String... excludes) {
     List<LabelValueBean> ret = new ArrayList<LabelValueBean>();
     for (jp.furplag.struts.initializer.dto.PropDto e : propsDto.getKeyExcludes(key, orderKey, reverse, excludes)) {
       ret.add(e.toLabelValueBean());
@@ -120,19 +94,19 @@ public class ResourceUtils {
     return ret;
   }
 
-  public static List<LabelValueBean> getDdlKeyIncludes(final String key, final String... includes) {
-    return getDdlKeyExcludes(key, null, false, includes);
+  public static List<LabelValueBean> getsKeyIncludes(final String key, final String... includes) {
+    return getsKeyIncludes(key, null, false, includes);
   }
 
-  public static List<LabelValueBean> getDdlKeyIncludes(final String key, final String orderKey, final String... includes) {
-    return getDdlKeyExcludes(key, orderKey, false, includes);
+  public static List<LabelValueBean> getsKeyIncludes(final String key, final String orderKey, final String... includes) {
+    return getsKeyIncludes(key, orderKey, false, includes);
   }
 
-  public static List<LabelValueBean> getDdlKeyIncludes(final String key, final boolean reverse, final String... includes) {
-    return getDdlKeyExcludes(key, null, reverse, includes);
+  public static List<LabelValueBean> getsKeyIncludes(final String key, final boolean reverse, final String... includes) {
+    return getsKeyIncludes(key, null, reverse, includes);
   }
 
-  public static List<LabelValueBean> getDdlKeyIncludes(final String key, final String orderKey, final boolean reverse, final String... includes) {
+  public static List<LabelValueBean> getsKeyIncludes(final String key, final String orderKey, final boolean reverse, final String... includes) {
     List<LabelValueBean> ret = new ArrayList<LabelValueBean>();
     for (jp.furplag.struts.initializer.dto.PropDto e : propsDto.getKeyIncludes(key, orderKey, reverse, includes)) {
       ret.add(new LabelValueBean(e.value, e.key));
@@ -141,7 +115,7 @@ public class ResourceUtils {
     return ret;
   }
 
-  public static List<LabelValueBean> getDdlValueExcludes(final String key, final String orderKey, final boolean reverse, final String... excludes) {
+  public static List<LabelValueBean> getsValueExcludes(final String key, final String orderKey, final boolean reverse, final String... excludes) {
     List<LabelValueBean> ret = new ArrayList<LabelValueBean>();
     List<String> l = Arrays.asList(excludes);
     for (jp.furplag.struts.initializer.dto.PropDto e : propsDto.gets(key, orderKey, reverse)) {
@@ -151,7 +125,7 @@ public class ResourceUtils {
     return ret;
   }
 
-  public static List<LabelValueBean> getDdlValueIncludes(final String key, final String orderKey, final boolean reverse, final String... includes) {
+  public static List<LabelValueBean> getsValueIncludes(final String key, final String orderKey, final boolean reverse, final String... includes) {
     List<LabelValueBean> ret = new ArrayList<LabelValueBean>();
     List<String> l = Arrays.asList(includes);
     for (jp.furplag.struts.initializer.dto.PropDto e : propsDto.gets(key, orderKey, reverse)) {
@@ -162,11 +136,11 @@ public class ResourceUtils {
   }
 
   public static boolean containsKey(final String key, final String searchKey) {
-    return getDdlKeyIncludes(key, null, false, searchKey).size() > 0;
+    return getsKeyIncludes(key, null, false, searchKey).size() > 0;
   }
 
   public static boolean containsValue(final String key, final String value) {
-    return getDdlValueIncludes(key, null, false, value).size() > 0;
+    return getsValueIncludes(key, null, false, value).size() > 0;
   }
 
   public static void setPropsDto() {

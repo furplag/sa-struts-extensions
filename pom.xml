@@ -118,7 +118,7 @@
     <dependency>
       <groupId>jp.furplag.sandbox.java.util</groupId>
       <artifactId>commons-wrap</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
@@ -140,11 +140,6 @@
           <artifactId>javassist</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-      <version>2.7</version>
     </dependency>
     <dependency>
       <groupId>oro</groupId>
@@ -215,11 +210,6 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.ocpsoft.prettytime</groupId>
-      <artifactId>prettytime</artifactId>
-      <version>4.0.0.Final</version>
-    </dependency>
-    <dependency>
       <groupId>org.seasar.container</groupId>
       <artifactId>s2-extension</artifactId>
       <version>2.4.48</version>
@@ -273,7 +263,7 @@
     <dependency>
       <groupId>jp.furplag.sandbox.java.util</groupId>
       <artifactId>webinspector</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
   <build>
