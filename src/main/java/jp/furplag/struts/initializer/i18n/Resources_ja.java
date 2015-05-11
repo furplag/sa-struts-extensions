@@ -20,7 +20,7 @@ import java.util.ListResourceBundle;
 public class Resources_ja extends ListResourceBundle {
 
   private static final Object[][] OBJECTS = new Object[][] {
-    {"end", "システム起動処理を終了しました。 (処理時間: {0})"},
+    {"end", "システム起動処理を終了しました ({0})。"},
     {"fatal", "システム起動処理中にエラーが発生しました。外部リソースは取得されていません。"},
     {"fatal.component", "コンポーネント [{0}] が取得できません。 [src/main/resources/app.dicon] を確認してください。"},
     {"fatal.sql", "データソースにアクセスできません。 [src/main/resources/customizer.dicon, src/main/resources/jdbc.dicon, src/main/resources/s2jdbc.dicon] および [src/main/webapp/lib] を確認してください。"},

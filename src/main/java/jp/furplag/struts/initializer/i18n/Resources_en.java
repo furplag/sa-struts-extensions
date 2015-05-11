@@ -20,7 +20,7 @@ import java.util.ListResourceBundle;
 public class Resources_en extends ListResourceBundle {
 
   private static final Object[][] OBJECTS = new Object[][] {
-    {"end", "Webapp initialization end. (cost:{0}msec)"},
+    {"end", "Webapp initialization end ({0})."},
     {"fatal", "Webapp initialization failed, no additional properties defined."},
     {"fatal.component", "Component [{0}] not found. Check settings [src/main/resources/app.dicon] and configure."},
     {"fatal.sql", "Unable to access Data Sources. Check settings [src/main/resources/customizer.dicon, src/main/resources/jdbc.dicon, src/main/resources/s2jdbc.dicon] and dependencies [src/main/webapp/lib] and configure."},

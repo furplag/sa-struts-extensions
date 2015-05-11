@@ -25,6 +25,9 @@ import jp.furplag.util.commons.StringUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+import org.joda.time.format.PeriodFormat;
 import org.seasar.framework.container.ComponentNotFoundRuntimeException;
 import org.seasar.framework.container.SingletonS2Container;
 import org.seasar.framework.exception.SQLRuntimeException;
@@ -43,7 +46,7 @@ public class InitializeServlet extends HttpServlet {
   public void init() throws ServletException {
     ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE);
     LOG.info(bundle.getString("start"));
-    final long start = System.currentTimeMillis();
+    final DateTime start = DateTime.now();
     jp.furplag.struts.initializer.dto.PropsDto propsDto = null;
     try {
       propsDto = SingletonS2Container.getComponent(jp.furplag.struts.initializer.dto.PropsDto.class);
@@ -66,6 +69,6 @@ public class InitializeServlet extends HttpServlet {
       }
     }
     LOG.info(propsDto == null ? bundle.getString("fatal") : MessageFormat.format(bundle.getString("result"), new Object[]{"", propsDto.getCount(), ""}));
-    LOG.info(MessageFormat.format(bundle.getString("end"), new Object[]{System.currentTimeMillis() - start}));
+    LOG.info(MessageFormat.format(bundle.getString("end"), new Object[]{PeriodFormat.wordBased().print(new Period(start, DateTime.now()))}));
   }
 }
