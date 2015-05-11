@@ -22,6 +22,9 @@ import jp.furplag.util.commons.StringUtils;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Interval;
+import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
 import org.ocpsoft.prettytime.PrettyTime;
 
 public class DateTimeUtils {
@@ -29,7 +32,7 @@ public class DateTimeUtils {
   protected DateTimeUtils() {}
 
   protected static Locale getLocale(final String id) {
-    if (!StringUtils.isSimilarToBlank(id)) return Locale.ROOT;
+    if (StringUtils.isSimilarToBlank(id)) return Locale.ROOT;
     try {
       if (!StringUtils.contains(id, "_")) return new Locale(id);
       String[] ids = StringUtils.split(id, "_");
@@ -45,7 +48,7 @@ public class DateTimeUtils {
   }
 
   protected static DateTimeZone getDateTimeZone(final String id) {
-    if (!StringUtils.isSimilarToBlank(id)) return DateTimeZone.UTC;
+    if (StringUtils.isSimilarToBlank(id)) return DateTimeZone.UTC;
     try {
       return DateTimeZone.forID(id);
     } catch (Exception e) {
@@ -56,33 +59,67 @@ public class DateTimeUtils {
   }
 
   public static String prettify(final Object instant) {
-    return prettify(instant, Locale.getDefault(), DateTimeZone.getDefault());
+    return prettify(instant, Locale.getDefault(), DateTimeZone.getDefault(), null);
+  }
+
+  public static String prettify(final Object instant, final Period limit) {
+    return prettify(instant, Locale.getDefault(), DateTimeZone.getDefault(), limit);
   }
 
   public static String prettify(final Object instant, final String localeId, final String timeZoneId) {
-    return prettify(instant, getLocale(localeId), getDateTimeZone(timeZoneId));
+    return prettify(instant, getLocale(localeId), getDateTimeZone(timeZoneId), null);
+  }
+
+  public static String prettify(final Object instant, final String localeId, final String timeZoneId, final Period limit) {
+    return prettify(instant, getLocale(localeId), getDateTimeZone(timeZoneId), limit);
   }
 
   public static String prettify(final Object instant, final String localeId, final TimeZone timeZone) {
-    return prettify(instant, getLocale(localeId), DateTimeZone.forTimeZone(timeZone));
+    return prettify(instant, getLocale(localeId), DateTimeZone.forTimeZone(timeZone), null);
+  }
+
+  public static String prettify(final Object instant, final String localeId, final TimeZone timeZone, final Period limit) {
+    return prettify(instant, getLocale(localeId), DateTimeZone.forTimeZone(timeZone), limit);
   }
 
   public static String prettify(final Object instant, final String localeId, final DateTimeZone dateTimeZone) {
-    return prettify(instant, getLocale(localeId), dateTimeZone);
+    return prettify(instant, getLocale(localeId), dateTimeZone, null);
+  }
+
+  public static String prettify(final Object instant, final String localeId, final DateTimeZone dateTimeZone, final Period limit) {
+    return prettify(instant, getLocale(localeId), dateTimeZone, limit);
   }
 
   public static String prettify(final Object instant, final Locale locale, final String timeZoneId) {
-    return prettify(instant, locale, getDateTimeZone(timeZoneId));
+    return prettify(instant, locale, getDateTimeZone(timeZoneId), null);
+  }
+
+  public static String prettify(final Object instant, final Locale locale, final String timeZoneId, final Period limit) {
+    return prettify(instant, locale, getDateTimeZone(timeZoneId), limit);
   }
 
   public static String prettify(final Object instant, final Locale locale, final TimeZone timeZone) {
-    return prettify(instant, locale, DateTimeZone.forTimeZone(timeZone));
+    return prettify(instant, locale, DateTimeZone.forTimeZone(timeZone), null);
+  }
+
+  public static String prettify(final Object instant, final Locale locale, final TimeZone timeZone, final Period limit) {
+    return prettify(instant, locale, DateTimeZone.forTimeZone(timeZone), limit);
   }
 
   public static String prettify(final Object instant, final Locale locale, final DateTimeZone dateTimeZone) {
+    return prettify(instant, locale, dateTimeZone, null);
+  }
+
+  public static String prettify(final Object instant, final Locale locale, final DateTimeZone dateTimeZone, final Period limit) {
     if (instant == null) return StringUtils.EMPTY;
     try {
-      return new PrettyTime(new DateTime(dateTimeZone == null ? DateTimeZone.UTC : dateTimeZone).toDate()).setLocale(locale == null ? Locale.ROOT : locale).format(new DateTime(instant, dateTimeZone).toDate());
+      DateTime temporary = new DateTime(instant, dateTimeZone == null ? DateTimeZone.UTC : dateTimeZone);
+      DateTime now = new DateTime(temporary.getZone());
+      if (limit == null) return new PrettyTime(now.toDate()).setLocale(locale == null ? Locale.ROOT : locale).formatUnrounded(temporary.toDate());
+      if (new Interval(now.minus(limit), now.plus(limit)).contains(temporary)) return new PrettyTime(now.toDate()).setLocale(locale == null ? Locale.ROOT : locale).formatUnrounded(temporary.toDate());
+      if (temporary.toString(DateTimeFormat.shortDate()).equals(now.toString(DateTimeFormat.shortDate()))) return temporary.toString(DateTimeFormat.mediumTime());
+
+      return temporary.toString(DateTimeFormat.mediumDateTime());
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -90,23 +127,183 @@ public class DateTimeUtils {
     return StringUtils.EMPTY;
   }
 
+  public static String prettifyWithLimitByDays(final Object instant, final Integer limit) {
+    return prettifyWithLimitByDays(instant, Locale.getDefault(), DateTimeZone.getDefault(), limit);
+  }
+
+  public static String prettifyWithLimitByDays(final Object instant, final Locale locale, final Integer limit) {
+    return prettifyWithLimitByDays(instant, locale, DateTimeZone.getDefault(), limit);
+  }
+
+  public static String prettifyWithLimitByDays(final Object instant, final String timeZoneId, final Integer limit) {
+    return prettifyWithLimitByDays(instant, Locale.getDefault(), getDateTimeZone(timeZoneId), limit);
+  }
+
+  public static String prettifyWithLimitByDays(final Object instant, final TimeZone timeZone, final Integer limit) {
+    return prettifyWithLimitByDays(instant, Locale.getDefault(), DateTimeZone.forTimeZone(timeZone), limit);
+  }
+
+  public static String prettifyWithLimitByDays(final Object instant, final DateTimeZone dateTimeZone, final Integer limit) {
+    return prettifyWithLimitByDays(instant, Locale.getDefault(), dateTimeZone, limit);
+  }
+
+  public static String prettifyWithLimitByDays(final Object instant, final Locale locale, final String timeZoneId, final Integer limit) {
+    return prettifyWithLimitByDays(instant, locale, getDateTimeZone(timeZoneId), limit);
+  }
+
+  public static String prettifyWithLimitByDays(final Object instant, final Locale locale, final TimeZone timeZone, final Integer limit) {
+    return prettifyWithLimitByDays(instant, locale, DateTimeZone.forTimeZone(timeZone), limit);
+  }
+
+  public static String prettifyWithLimitByDays(final Object instant, final Locale locale, final DateTimeZone dateTimeZone, final Integer limit) {
+    return prettify(instant, locale, dateTimeZone, limit == null ? null : new Period().withDays(limit * (limit < 0 ? -1 : 1) + 1));
+  }
+
+  public static String prettifyWithLimitByHours(final Object instant, final Integer limit) {
+    return prettifyWithLimitByHours(instant, Locale.getDefault(), DateTimeZone.getDefault(), limit);
+  }
+
+  public static String prettifyWithLimitByHours(final Object instant, final Locale locale, final Integer limit) {
+    return prettifyWithLimitByHours(instant, locale, DateTimeZone.getDefault(), limit);
+  }
+
+  public static String prettifyWithLimitByHours(final Object instant, final String timeZoneId, final Integer limit) {
+    return prettifyWithLimitByHours(instant, Locale.getDefault(), getDateTimeZone(timeZoneId), limit);
+  }
+
+  public static String prettifyWithLimitByHours(final Object instant, final TimeZone timeZone, final Integer limit) {
+    return prettifyWithLimitByHours(instant, Locale.getDefault(), DateTimeZone.forTimeZone(timeZone), limit);
+  }
+
+  public static String prettifyWithLimitByHours(final Object instant, final DateTimeZone dateTimeZone, final Integer limit) {
+    return prettifyWithLimitByHours(instant, Locale.getDefault(), dateTimeZone, limit);
+  }
+
+  public static String prettifyWithLimitByHours(final Object instant, final Locale locale, final String timeZoneId, final Integer limit) {
+    return prettifyWithLimitByHours(instant, locale, getDateTimeZone(timeZoneId), limit);
+  }
+
+  public static String prettifyWithLimitByHours(final Object instant, final Locale locale, final TimeZone timeZone, final Integer limit) {
+    return prettifyWithLimitByHours(instant, locale, DateTimeZone.forTimeZone(timeZone), limit);
+  }
+
+  public static String prettifyWithLimitByHours(final Object instant, final Locale locale, final DateTimeZone dateTimeZone, final Integer limit) {
+    return prettify(instant, locale, dateTimeZone, limit == null ? null : new Period().withHours(limit * (limit < 0 ? -1 : 1) + 1));
+  }
+
+  public static String prettifyWithLimitByMonths(final Object instant, final Integer limit) {
+    return prettifyWithLimitByMonths(instant, Locale.getDefault(), DateTimeZone.getDefault(), limit);
+  }
+
+  public static String prettifyWithLimitByMonths(final Object instant, final Locale locale, final Integer limit) {
+    return prettifyWithLimitByMonths(instant, locale, DateTimeZone.getDefault(), limit);
+  }
+
+  public static String prettifyWithLimitByMonths(final Object instant, final String timeZoneId, final Integer limit) {
+    return prettifyWithLimitByMonths(instant, Locale.getDefault(), getDateTimeZone(timeZoneId), limit);
+  }
+
+  public static String prettifyWithLimitByMonths(final Object instant, final TimeZone timeZone, final Integer limit) {
+    return prettifyWithLimitByMonths(instant, Locale.getDefault(), DateTimeZone.forTimeZone(timeZone), limit);
+  }
+
+  public static String prettifyWithLimitByMonths(final Object instant, final DateTimeZone dateTimeZone, final Integer limit) {
+    return prettifyWithLimitByMonths(instant, Locale.getDefault(), dateTimeZone, limit);
+  }
+
+  public static String prettifyWithLimitByMonths(final Object instant, final Locale locale, final String timeZoneId, final Integer limit) {
+    return prettifyWithLimitByMonths(instant, locale, getDateTimeZone(timeZoneId), limit);
+  }
+
+  public static String prettifyWithLimitByMonths(final Object instant, final Locale locale, final TimeZone timeZone, final Integer limit) {
+    return prettifyWithLimitByMonths(instant, locale, DateTimeZone.forTimeZone(timeZone), limit);
+  }
+
+  public static String prettifyWithLimitByMonths(final Object instant, final Locale locale, final DateTimeZone dateTimeZone, final Integer limit) {
+    return prettify(instant, locale, dateTimeZone, limit == null ? null : new Period().withMonths(limit * (limit < 0 ? -1 : 1) + 1));
+  }
+
+  public static String prettifyWithLimitByWeeks(final Object instant, final Integer limit) {
+    return prettifyWithLimitByWeeks(instant, Locale.getDefault(), DateTimeZone.getDefault(), limit);
+  }
+
+  public static String prettifyWithLimitByWeeks(final Object instant, final Locale locale, final Integer limit) {
+    return prettifyWithLimitByWeeks(instant, locale, DateTimeZone.getDefault(), limit);
+  }
+
+  public static String prettifyWithLimitByWeeks(final Object instant, final String timeZoneId, final Integer limit) {
+    return prettifyWithLimitByWeeks(instant, Locale.getDefault(), getDateTimeZone(timeZoneId), limit);
+  }
+
+  public static String prettifyWithLimitByWeeks(final Object instant, final TimeZone timeZone, final Integer limit) {
+    return prettifyWithLimitByWeeks(instant, Locale.getDefault(), DateTimeZone.forTimeZone(timeZone), limit);
+  }
+
+  public static String prettifyWithLimitByWeeks(final Object instant, final DateTimeZone dateTimeZone, final Integer limit) {
+    return prettifyWithLimitByWeeks(instant, Locale.getDefault(), dateTimeZone, limit);
+  }
+
+  public static String prettifyWithLimitByWeeks(final Object instant, final Locale locale, final String timeZoneId, final Integer limit) {
+    return prettifyWithLimitByWeeks(instant, locale, getDateTimeZone(timeZoneId), limit);
+  }
+
+  public static String prettifyWithLimitByWeeks(final Object instant, final Locale locale, final TimeZone timeZone, final Integer limit) {
+    return prettifyWithLimitByWeeks(instant, locale, DateTimeZone.forTimeZone(timeZone), limit);
+  }
+
+  public static String prettifyWithLimitByWeeks(final Object instant, final Locale locale, final DateTimeZone dateTimeZone, final Integer limit) {
+    return prettify(instant, locale, dateTimeZone, limit == null ? null : new Period().withWeeks(limit * (limit < 0 ? -1 : 1) + 1));
+  }
+
+  public static String prettifyWithLimitByYears(final Object instant, final Integer limit) {
+    return prettifyWithLimitByYears(instant, Locale.getDefault(), DateTimeZone.getDefault(), limit);
+  }
+
+  public static String prettifyWithLimitByYears(final Object instant, final Locale locale, final Integer limit) {
+    return prettifyWithLimitByYears(instant, locale, DateTimeZone.getDefault(), limit);
+  }
+
+  public static String prettifyWithLimitByYears(final Object instant, final String timeZoneId, final Integer limit) {
+    return prettifyWithLimitByYears(instant, Locale.getDefault(), getDateTimeZone(timeZoneId), limit);
+  }
+
+  public static String prettifyWithLimitByYears(final Object instant, final TimeZone timeZone, final Integer limit) {
+    return prettifyWithLimitByYears(instant, Locale.getDefault(), DateTimeZone.forTimeZone(timeZone), limit);
+  }
+
+  public static String prettifyWithLimitByYears(final Object instant, final DateTimeZone dateTimeZone, final Integer limit) {
+    return prettifyWithLimitByYears(instant, Locale.getDefault(), dateTimeZone, limit);
+  }
+
+  public static String prettifyWithLimitByYears(final Object instant, final Locale locale, final String timeZoneId, final Integer limit) {
+    return prettifyWithLimitByYears(instant, locale, getDateTimeZone(timeZoneId), limit);
+  }
+
+  public static String prettifyWithLimitByYears(final Object instant, final Locale locale, final TimeZone timeZone, final Integer limit) {
+    return prettifyWithLimitByYears(instant, locale, DateTimeZone.forTimeZone(timeZone), limit);
+  }
+
+  public static String prettifyWithLimitByYears(final Object instant, final Locale locale, final DateTimeZone dateTimeZone, final Integer limit) {
+    return prettify(instant, locale, dateTimeZone, limit == null ? null : new Period().withYears(limit * (limit < 0 ? -1 : 1) + 1));
+  }
+
   public static String prettifyWithLocale(final Object instant, final String localeId) {
-    return prettify(instant, getLocale(localeId), DateTimeZone.getDefault());
+    return prettify(instant, getLocale(localeId), DateTimeZone.getDefault(), null);
   }
 
   public static String prettifyWithLocale(final Object instant, final Locale locale) {
-    return prettify(instant, locale, DateTimeZone.getDefault());
+    return prettify(instant, locale, DateTimeZone.getDefault(), null);
   }
 
   public static String prettifyZoned(final Object instant, final String timeZoneId) {
-    return prettify(instant, Locale.getDefault(), getDateTimeZone(timeZoneId));
+    return prettify(instant, Locale.getDefault(), getDateTimeZone(timeZoneId), null);
   }
 
   public static String prettifyZoned(final Object instant, final TimeZone timeZone) {
-    return prettify(instant, Locale.getDefault(), DateTimeZone.forTimeZone(timeZone));
+    return prettify(instant, Locale.getDefault(), DateTimeZone.forTimeZone(timeZone), null);
   }
 
   public static String prettifyZoned(final Object instant, final DateTimeZone dateTimeZone) {
-    return prettify(instant, Locale.getDefault(), dateTimeZone);
+    return prettify(instant, Locale.getDefault(), dateTimeZone, null);
   }
 }
