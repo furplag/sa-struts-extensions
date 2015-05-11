@@ -71,6 +71,83 @@
     </function-signature>
   </function>
   <function>
+    <name>prettifySimple</name>
+    <function-class>statics.jp.furplag.sastruts.extension.util.DateTimeUtils</function-class>
+    <function-signature>
+      java.lang.String prettify(java.lang.Object)
+    </function-signature>
+  </function>
+  <function>
+    <name>prettifySimpleWithLimitByDays</name>
+    <function-class>statics.jp.furplag.sastruts.extension.util.DateTimeUtils</function-class>
+    <function-signature>
+      java.lang.String prettifyWithLimitByDays(java.lang.Object, java.lang.Integer)
+    </function-signature>
+  </function>
+  <function>
+    <name>prettifySimpleWithLimitByHours</name>
+    <function-class>statics.jp.furplag.sastruts.extension.util.DateTimeUtils</function-class>
+    <function-signature>
+      java.lang.String prettifyWithLimitByHours(java.lang.Object, java.lang.Integer)
+    </function-signature>
+  </function>
+  <function>
+    <name>prettifySimpleWithLimitByMonths</name>
+    <function-class>statics.jp.furplag.sastruts.extension.util.DateTimeUtils</function-class>
+    <function-signature>
+      java.lang.String prettifyWithLimitByMonths(java.lang.Object, java.lang.Integer)
+    </function-signature>
+  </function>
+  <function>
+    <name>prettifySimpleWithLimitByWeeks</name>
+    <function-class>statics.jp.furplag.sastruts.extension.util.DateTimeUtils</function-class>
+    <function-signature>
+      java.lang.String prettifyWithLimitByWeeks(java.lang.Object, java.lang.Integer)
+    </function-signature>
+  </function>
+  <function>
+    <name>prettifySimpleWithLimitByYears</name>
+    <function-class>statics.jp.furplag.sastruts.extension.util.DateTimeUtils</function-class>
+    <function-signature>
+      java.lang.String prettifyWithLimitByYears(java.lang.Object, java.lang.Integer)
+    </function-signature>
+  </function>
+  <function>
+    <name>prettifyWithLimitByDays</name>
+    <function-class>statics.jp.furplag.sastruts.extension.util.DateTimeUtils</function-class>
+    <function-signature>
+      java.lang.String prettifyWithLimitByDays(java.lang.Object, java.lang.String, java.lang.String, java.lang.Integer)
+    </function-signature>
+  </function>
+  <function>
+    <name>prettifyWithLimitByHours</name>
+    <function-class>statics.jp.furplag.sastruts.extension.util.DateTimeUtils</function-class>
+    <function-signature>
+      java.lang.String prettifyWithLimitByHours(java.lang.Object, java.lang.String, java.lang.String, java.lang.Integer)
+    </function-signature>
+  </function>
+  <function>
+    <name>prettifyWithLimitByMonths</name>
+    <function-class>statics.jp.furplag.sastruts.extension.util.DateTimeUtils</function-class>
+    <function-signature>
+      java.lang.String prettifyWithLimitByMonths(java.lang.Object, java.lang.String, java.lang.String, java.lang.Integer)
+    </function-signature>
+  </function>
+  <function>
+    <name>prettifyWithLimitByWeeks</name>
+    <function-class>statics.jp.furplag.sastruts.extension.util.DateTimeUtils</function-class>
+    <function-signature>
+      java.lang.String prettifyWithLimitByWeeks(java.lang.Object, java.lang.String, java.lang.String, java.lang.Integer)
+    </function-signature>
+  </function>
+  <function>
+    <name>prettifyWithLimitByYears</name>
+    <function-class>statics.jp.furplag.sastruts.extension.util.DateTimeUtils</function-class>
+    <function-signature>
+      java.lang.String prettifyWithLimitByYears(java.lang.Object, java.lang.String, java.lang.String, java.lang.Integer)
+    </function-signature>
+  </function>
+  <function>
     <name>prettifyWithLocale</name>
     <function-class>statics.jp.furplag.sastruts.extension.util.DateTimeUtils</function-class>
     <function-signature>

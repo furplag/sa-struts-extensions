@@ -26,7 +26,7 @@ public class Resources_ja extends ListResourceBundle {
     {"fatal.sql", "データソースにアクセスできません。 [src/main/resources/customizer.dicon, src/main/resources/jdbc.dicon, src/main/resources/s2jdbc.dicon] および [src/main/webapp/lib] を確認してください。"},
     {"fatal.any", "[src/main/webapp/WEB-INF/web.xml, src/main/resources/*.dicon] を確認してください。"},
     {"inactive", "外部リソースの取得をスキップします。"},
-    {"result", "{0} 取得した外部リソースは {1} 件です。{2}"},
+    {"result", "{0}取得した外部リソースは {1} 件です。{2}"},
     {"start", "システム起動処理を開始します。"}
   };
 
