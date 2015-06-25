@@ -28,7 +28,7 @@ import org.seasar.extension.jdbc.dialect.OracleDialect;
 import org.seasar.extension.jdbc.manager.JdbcManagerImplementor;
 import org.seasar.extension.jdbc.service.S2AbstractService;
 
-public class AbstractService<T extends AbstractEntity> extends S2AbstractService<T> {
+public abstract class AbstractService<T extends AbstractEntity> extends S2AbstractService<T> {
 
   protected static final String SQL_FILE_SUFFIX = ".sql";
 
