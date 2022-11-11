@@ -1,5 +1,6 @@
 # sa-struts-extensions
 [![deprecated](https://img.shields.io/badge/deprecated-too%20stale%20to%20maintain-red.svg)](https://img.shields.io/badge/deprecated-too%20stale%20to%20maintain-red.svg)
+
 Extensions for SAStruts-S2JDBC.
 
 ## Getting Start
